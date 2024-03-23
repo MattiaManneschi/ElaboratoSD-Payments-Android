@@ -25,3 +25,5 @@ class _WidgetTreeState extends State<WidgetTree> {
     );
   }
 }
+
+// file che serve per reindirizzare correttamente l'utente sulla base dei dati forniti da Auth (file auth.dart)

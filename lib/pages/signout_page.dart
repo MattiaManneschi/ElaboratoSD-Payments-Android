@@ -1,3 +1,5 @@
+//semplice pagina contenente due bottoni, uno per fare il sign out e l'altro per cancellare il proprio account
+
 import 'package:flutter/material.dart';
 import 'package:wally_app/auth.dart';
 
@@ -30,7 +32,7 @@ class _State extends State<SignOutPage> {
                 width: MediaQuery.of(context).size.width * .6,
                 child: ElevatedButton(
                     onPressed: () {
-                      Auth().deleteUser();
+                      Auth().deleteUser(); // invoca il metodo deleteUser() di Auth
                       setState(() {});
                     },
                     child: const Text("Delete account",
@@ -46,8 +48,8 @@ class _State extends State<SignOutPage> {
                 width: MediaQuery.of(context).size.width * .6,
                 child: ElevatedButton(
                     onPressed: () {
-                      Auth().signOut();
-                      setState(() {});
+                      Auth().signOut(); // invoca il metodo signOut() di Auth
+		      setState(() {});
                     },
                     child: const Text("Sign out",
                         style: TextStyle(

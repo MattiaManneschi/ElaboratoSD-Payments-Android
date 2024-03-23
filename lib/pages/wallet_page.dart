@@ -1,3 +1,5 @@
+// pagina che si interfaccia con il backend per integrare il pagamento nexi
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wally_app/pages/profile_page.dart';
@@ -13,8 +15,8 @@ class _WalletPageState extends State<WalletPage> {
   int selected = 0;
   int money = 1;
 
-  var isPressed = [false, false, false, false, false];
-
+  var isPressed = [false, false, false, false, false];  // isPressed e il metodo successivo servono per mantenere attivo il pacchetto di punti selezionato dall'utente e 
+                                                        // "spegnere" tutti gli altri
   void setButton(int k) {
     for (int i = 0; i < isPressed.length; i++) {
       if (i == k) {
@@ -26,7 +28,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   TextEditingController myController = TextEditingController();
-  static const platform = MethodChannel('nexi.payment/gateway');
+  static const platform = MethodChannel('nexi.payment/gateway'); // dichiarazione e definizione del platform channel per collegarsi al codice Java
 
   @override
   void initState() {
@@ -35,10 +37,10 @@ class _WalletPageState extends State<WalletPage> {
 
   void setSelected(int s) {
     selected = s;
-    money = s * 50;
+    money = s * 50; // conversione punti => importo 
   }
 
-  bool check() {
+  bool check() {  // metodo di controllo, serve per verificare che l'utente abbia effettivamente selezionato un pacchetto di punti
     if (selected != 0) {
       return true;
     } else {
@@ -50,8 +52,8 @@ class _WalletPageState extends State<WalletPage> {
     if (check()) {
       try {
         final int points =
-            await platform.invokeMethod("pay", {'amount': money});
-        ProfilePage.addPoints(points);
+            await platform.invokeMethod("pay", {'amount': money}); // invocazione del metodo "pay" del backend, che restituisce i punti (anche 0 in caso di fallimento)
+        ProfilePage.addPoints(points); // invoca il metodo addPoints() di ProfilePage per aggiornare i punti
       } on PlatformException catch (e) {
         Text("$e.message");
       }

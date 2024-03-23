@@ -1,3 +1,5 @@
+// home page dove viene definita la tab principale suddivisa nelle 3 sotto-pagine;
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wally_app/auth.dart';
@@ -29,7 +31,7 @@ class HomePage extends StatelessWidget {
         child: Scaffold(
             appBar: AppBar(
                 title: _title(),
-                bottom: const TabBar(
+                bottom: const TabBar(  // tab
                   tabs: [
                     Tab(icon: Icon(Icons.attach_money_sharp)),
                     Tab(icon: Icon(Icons.point_of_sale)),
@@ -38,9 +40,9 @@ class HomePage extends StatelessWidget {
                 )),
             body: const TabBarView(
               children: [
-                ProfilePage(),
-                WalletPage(),
-                SignOutPage(),
+                ProfilePage(), // pagina 1
+                WalletPage(), // pagina 2
+                SignOutPage(), // pagina 3
               ],
             )));
   }

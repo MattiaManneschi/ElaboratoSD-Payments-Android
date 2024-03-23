@@ -1,3 +1,5 @@
+// pagina principale dove vengono riassunti i punti dell'utente e le offerte disponibili
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wally_app/main.dart';
@@ -11,22 +13,22 @@ class ProfilePage extends StatefulWidget {
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 
-  static void addPoints(int points) {
-    final docRef = db.doc(Auth().currentUser?.email);
+  static void addPoints(int points) {  // aggiunge i punti all'utente dopo aver pagato 
+    final docRef = db.doc(Auth().currentUser?.email); // prende l'istanza dello user corrente dal db, identificato in maniera univoca dall'email
     docRef.get().then((DocumentSnapshot doc) {
       final data = doc.data() as Map<String, dynamic>;
-      currentPoints = data['points'];
+      currentPoints = data['points']; // prende i punti correnti dell'utente
     });
-    currentPoints += points;
-    docRef.update({"points": currentPoints});
+    currentPoints += points; // maggiorazione
+    docRef.update({"points": currentPoints}); //aggiornamento dei punti
   }
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   bool showWidget = false;
 
-  var isPressed = [false, false, false, false];
-
+  var isPressed = [false, false, false, false]; // isPressed e il metodo successivo servono per tenere attiva l'offerta selezionata dall'utente e
+                                                // "spegnere" tutte le altre
   void setButton(int k) {
     for (int i = 0; i < isPressed.length; i++) {
       if (i == k) {
@@ -40,7 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController myController = TextEditingController();
   String response = '';
 
-  int getPoints() {
+  int getPoints() {  //metodo che ritorna i punti correnti (serve solo alla GUI per far sapere all'utente quanti punti ha)
     final docRef = db.doc(Auth().currentUser?.email);
     docRef.get().then((DocumentSnapshot doc) {
       final data = doc.data() as Map<String, dynamic>;
@@ -49,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return currentPoints;
   }
 
-  bool removePoints(int points) {
+  bool removePoints(int points) {  // rimuove i punti dopo un ordine
     int currentPoints = getPoints();
     if (currentPoints >= points) {
       currentPoints -= points;

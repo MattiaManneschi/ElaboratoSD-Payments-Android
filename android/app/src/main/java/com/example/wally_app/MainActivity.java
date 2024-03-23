@@ -25,13 +25,13 @@ import it.nexi.xpay.Utils.XPayLogger;
 import it.nexi.xpay.XPay;
 
 public class MainActivity extends FlutterActivity {
-    private static final String CHANNEL = "nexi.payment/gateway";
+    private static final String CHANNEL = "nexi.payment/gateway"; // platform channel di collegamento con wallet.dart
 
     private MethodChannel.Result myResult;
 
     private final Backend backend = new Backend();
 
-    String secret_key = backend.getSecret_key();
+    String secret_key = backend.getSecret_key(); // riceve i dati personali da un package a parte
     String alias = backend.getAlias();
 
     @Override
@@ -39,12 +39,12 @@ public class MainActivity extends FlutterActivity {
         super.configureFlutterEngine(flutterEngine);
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler(
                 (call, result) -> {
-                    if (Objects.equals(call.method, "pay")) {
+                    if (Objects.equals(call.method, "pay")) { // metodo call invocato dalla pagina wallet.dart
                         try {
-                            Activity myActivity = getActivity();
-                            XPay xPay = new XPay(myActivity, secret_key);
-                            myResult = result;
-                            pay(xPay, call.argument("amount"));
+                            Activity myActivity = getActivity(); // sessione corrente dell'applicazione
+                            XPay xPay = new XPay(myActivity, secret_key); // inizializzazione oggetto di tipo XPay
+                            myResult = result; // dichiarazione aggiuntiva, serve per aspettare effettivamente il risultato di pay(...), prima di restituire qualcosa
+                            pay(xPay, call.argument("amount")); // l'importo viene preso dalla call 
                         } catch (DeviceRootedException e) {
                             throw new RuntimeException(e);
                         }
@@ -54,15 +54,15 @@ public class MainActivity extends FlutterActivity {
     }
     private void pay(XPay xPay, int amount) {
         XPayLogger.DEBUG = true;
-        xPay.GestioneContratti.setDomain("https://ecommerce.nexi.it");
-        xPay.GestioneContratti.setEnvironment(EnvironmentUtils.Environment.TEST);
+        xPay.GestioneContratti.setDomain("https://ecommerce.nexi.it"); // impostazione del dominio 
+        xPay.GestioneContratti.setEnvironment(EnvironmentUtils.Environment.TEST); // impostazione dell'ambiente
 
         ApiFrontOfficeQPRequest apiFrontOfficeQPRequest = null;
 
-        String code = getCodTrans();
+        String code = getCodTrans(); // codice di transazione generico a 10 cifre
 
         try{
-            apiFrontOfficeQPRequest = new ApiFrontOfficeQPRequest(alias, code, CurrencyUtilsQP.EUR, amount);
+            apiFrontOfficeQPRequest = new ApiFrontOfficeQPRequest(alias, code, CurrencyUtilsQP.EUR, amount); //invocazione dell'api Nexi con tutti i parametri raccolti
         }catch(UnsupportedEncodingException | MacException e){
             e.printStackTrace();
         }
@@ -72,25 +72,25 @@ public class MainActivity extends FlutterActivity {
             @Override
             public void onCancel(ApiFrontOfficeQPResponse response) {
                 Log.i("XPAY", "Operazione annullata dall'utente.");
-                myResult.success(0);
+                myResult.success(0); //altrimenti ritorna 0 punti
             }
 
             @Override
             public void onConfirm(ApiFrontOfficeQPResponse response) {
                 if(response.isValid()){
                     Log.i("XPAY", "Operazione confermata.");
-                    myResult.success(amount/50);
+                    myResult.success(amount/50); //se l'operazione va a buoni fine il risultato sono i punti legati all'importo speso
 
                 }else{
                     Log.i("XPAY", "La risposta non è valida.");
-                    myResult.success(0);
+                    myResult.success(0); //altrimenti ritorna 0 punti
                 }
             }
 
             @Override
             public void onError(ApiErrorResponse error) {
                 Log.i("XPAY", "Errore.");
-                myResult.success(0);
+                myResult.success(0); //altrimenti ritorna 0 punti
             }
         });
     }

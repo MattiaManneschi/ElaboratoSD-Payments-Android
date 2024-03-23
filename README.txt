@@ -1,0 +1,2 @@
+- I file .dart sono archiviati all'interno della cartella lib;
+- I file java sono archiviati nel persorso wally_app\android\app\src\main\java\com\example\wally_app;

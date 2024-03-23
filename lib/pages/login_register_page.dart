@@ -1,3 +1,5 @@
+// pagina di log in o sign up, dipende dai dati forniti dall'utente
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wally_app/main.dart';
@@ -15,12 +17,12 @@ class _LoginPageState extends State<LoginPage> {
 
   bool isLogin = true;
 
-  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController(); // serve per gestire l'input dell'utente
   final TextEditingController _controllerPassword = TextEditingController();
 
-  Future<void> signInWithEmailAndPassword() async {
+  Future<void> signInWithEmailAndPassword() async { // richiama il metodo sign in di Auth
     try {
-      await Auth().signInWithEmailAndPassword(
+      await Auth().signInWithEmailAndPassword(  
           email: _controllerEmail.text, password: _controllerPassword.text);
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -29,11 +31,11 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<void> createUserWithEmailAndPassword() async {
+  Future<void> createUserWithEmailAndPassword() async { // richiama il metodo sign up di Auth
     try {
       await Auth().createUserWithEmailAndPassword(
           email: _controllerEmail.text, password: _controllerPassword.text);
-      db.doc(Auth().currentUser?.email).set({
+      db.doc(Auth().currentUser?.email).set({  // se l'utente è effettivamente nuovo, viene aggiunto un nuovo oggetto sul db Firebase con campi corrispondenti
         'email': _controllerEmail.text,
         'password': _controllerPassword.text,
         'points': 0,
@@ -63,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
     return Text(errorMessage == '' ? '' : 'Humm ? $errorMessage');
   }
 
-  Widget _submitButton() {
+  Widget _submitButton() { // pulsante che cambia a seconda della volontà dell'utente (può essere di log in o di sign up
     return ElevatedButton(
       onPressed:
           isLogin ? signInWithEmailAndPassword : createUserWithEmailAndPassword,

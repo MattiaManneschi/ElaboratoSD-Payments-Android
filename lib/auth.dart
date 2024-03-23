@@ -8,7 +8,7 @@ class Auth {
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
-  Future<void> signInWithEmailAndPassword({
+  Future<void> signInWithEmailAndPassword({   // metodo di log in 
     required String email,
     required String password,
   }) async {
@@ -16,7 +16,7 @@ class Auth {
         email: email, password: password);
   }
 
-  Future<void> createUserWithEmailAndPassword({
+  Future<void> createUserWithEmailAndPassword({  // metodo di sign up
     required String email,
     required String password,
   }) async {
@@ -24,13 +24,16 @@ class Auth {
         email: email, password: password);
   }
 
-  Future<void> signOut() async {
+  Future<void> signOut() async {  // metodo di sign out
     await _firebaseAuth.signOut();
   }
 
-  Future<void> deleteUser() async {
+  Future<void> deleteUser() async { // metodo per cancellare l'account
     User? user = Auth().currentUser;
     user?.delete();
     db.doc(Auth().currentUser?.email).delete();
   }
 }
+
+
+// file che gestisce l'autenticazione utente;
